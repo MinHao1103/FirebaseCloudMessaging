@@ -1,0 +1,51 @@
+plugins {
+    id 'java'
+    id 'maven-publish'
+}
+
+group = 'com.example.service'
+version = '1.0.0'
+sourceCompatibility = '1.8'
+
+compileJava {
+    options.encoding = 'UTF-8'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+
+    // jetty
+    implementation 'org.eclipse.jetty:jetty-server:9.4.44.v20210927'
+    implementation 'org.eclipse.jetty:jetty-servlet:9.4.44.v20210927'
+
+    // jersey
+    implementation 'org.glassfish.jersey.containers:jersey-container-servlet:2.35'
+    implementation 'org.glassfish.jersey.media:jersey-media-json-jackson:2.35'
+    implementation 'org.glassfish.jersey.inject:jersey-hk2:2.39.1'
+
+    // reflections
+    implementation 'org.reflections:reflections:0.9.12'
+
+    // Json
+    implementation group: 'org.json', name: 'json', version: '20220924'
+
+    implementation fileTree(dir: 'libs', include: '*.jar')
+}
+
+test {
+    useJUnitPlatform()
+}
+
+jar {
+    // 將依賴打包到 JAR
+    from {
+        configurations.runtimeClasspath.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+    }
+    // 用覆蓋策略排除重複
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
